@@ -21,7 +21,7 @@ timezone:
 
 title: t0muxx's blog                          # the main title
 
-tagline: Swimmig in cyberspace   # it will display as the sub-title
+tagline: Swimming in cyberspace   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   Blogpost about Rust, Bare-metal development, Reverse-engineering and others nerdy things.
