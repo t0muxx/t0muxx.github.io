@@ -5,4 +5,4 @@ order: 4
 ---
 
 - [{{ site.github.username}}](https://github.com/{{ site.github.username}})
-- [@t0mux@infosec.exchange][https://infosec.exchange/@t0mux)
+- [@t0mux@infosec.exchange](https://infosec.exchange/@t0mux)
