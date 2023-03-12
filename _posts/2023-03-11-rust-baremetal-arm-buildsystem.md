@@ -89,6 +89,8 @@ The rust compiler generated an ELF file from our code. The raspberry pi does not
 To achieve that I use the command :
 - `aarch64-buildroot-linux-uclibc/bin/objcopy -O binary target/aarch64-unknown-none/release/kernel kernel8.img`
 
+The `-O binary` allows to generate a raw binary file.
+
 (Yes it requires an aarch64 toolchain. Mine has been build using [buildroot](https://buildroot.org/))
 
 From now, It's should be possible to load the firmware.
