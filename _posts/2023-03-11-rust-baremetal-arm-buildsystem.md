@@ -42,6 +42,18 @@ I uses this command line to compile the project :
 In the `RUSTFLAGS` env variable I set the linker script that will be used by the linker. 
 I also specify  `--manifest-path` of my kernel crate. I need to specify it because the root `Cargo.toml` of the project is a virtual manifest (i use `workspace` with two crates atm).
 
+It's possible to specify the `RUSTFLAGS` in the file `.cargo/config.toml` :
+
+```toml
+[target.aarch64-unknown-none]
+rustflags = [
+    "-C" , "link-arg=--script=aarch64-rasp3b.ld",
+]
+
+[build]
+target = "aarch64-unknown-none"
+```
+
 ## Linker file
 
 A linker file is required as for bare-metal developpment we need to specify the memory layout and to specify an entrypoint for our compiled firmware.
