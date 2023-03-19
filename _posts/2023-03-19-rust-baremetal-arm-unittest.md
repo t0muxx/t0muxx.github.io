@@ -270,6 +270,7 @@ Just note that I use `$1` (the first argument passed to the script) to retrieve 
 
 Now I can run my tests using : 
 - `cargo test -p kernel --lib --release --features qemu`
+
 ```
 Running 2 tests
   1. test_get_current_el.......................................[ok]
