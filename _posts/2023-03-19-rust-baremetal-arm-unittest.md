@@ -1,3 +1,12 @@
+---
+layout: post
+title:  "Rust bare metal unit test with Qemu"
+tags: rust ARM baremetal OSdev kernel
+category: RRK
+---
+
+# Rust bare metal unit test with Qemu
+
 (This blogpost is related to my custom Raspberry Pi 3b kernel : [RRK](https://github.com/t0muxx/RRK_raspberry_rust_kernel). It contains some information that I found useful and wanted to share.)
 
 DISCLAIMER : most of this content is ~~stolen~~ gracefully inspired from : https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials/tree/master/12_integrated_testing. I just think that it can be quite dense to understand so I wanted to summarize it here.
