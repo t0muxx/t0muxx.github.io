@@ -4,25 +4,26 @@ categories = ["Writeup", "Reverse"]
 date = "2024-02-03T00:00:00Z"
 tags = ["Windows", "Reverse"]
 title = "WU - Sthack 2021 - Reverse - Miteenpullover"
-draft = true
 +++
 
-(This is a reupload of a writeup that was previously on the blog of a compagny that is closed now.)
+(This is a reupload of a 2021 writeup that was previously on the blog of a company that is closed now.)
 
-How to defeat nanomite packer with dll injection and winapi functions hooking
+How to defeat nanomite packer with dll injection and WinAPI functions hooking
+
+<!--more-->
 
 ## Intro
 
-During the [sthack 2021](https://sthack.fr/) (ctf event @bordeaux france), [Phenol](https://twitter.com/Phenol__) created a reverse challenge that was unsolved (if i remember correctly).
+During the [sthack 2021](https://sthack.fr/) (ctf event @bordeaux france), [Phenol](https://twitter.com/Phenol__) created a reverse challenge that was unsolved (if I remember correctly).
 As he told me it was really hard to solve it motivated me to do it.
-I could not solve it during the CTF time but the next day i decided to continue to solve with a clear head.
-I tought it will be cool to share my write-up as nobody solved this crack-me.
+I could not solve it during the CTF time but the next day I decided to continue to solve with a clear head.
+I thought it would be cool to share my write-up as nobody solved this crack-me.
 
 
 ### Nanomite 101
 
 - I knew that the crackme was using `nanomite` by the name and as [Phenol](https://twitter.com/Phenol__) published two challenge using this technology on [root-me.org](https://www.root-me.org/)
-- The thing i know is that there is a father process that will bebug a child process and set it's register using system function to manipulate the child's control flow probably using `WaitForDebugEvent/GetThreadContext/SetThreadContext` etc...
+- The thing I know is that there is a father process that will debug a child process and set it's register using system function to manipulate the child's control flow probably using `WaitForDebugEvent/GetThreadContext/SetThreadContext` etc...
 
 - More info [here](https://www.apriorit.com/white-papers/293-nanomite-technology)
 
@@ -45,11 +46,11 @@ AAAAA
 
 - The main detected by IDA is the loader.
 - The real main is located at : `0x1400016F0`.
-- When we look at the import section we see no `winapi` imports
+- When we look at the import section we see no `WinAPI` imports
         + Strange for a binary that should debug a child process.
         + It's probably doing dynamic API resolution.
         + When we check's xrefs for `GetProcAddress` we see only three call for `memcpy_s` and `__register_frame_info`, `__deregister_frame_info`
-                * It's not using GetProcAddress to retrieve winapi functions addresses.
+                * It's not using GetProcAddress to retrieve WinAPI functions addresses.
 
 ### Understanding function address retrieving
 
@@ -155,7 +156,7 @@ __int64 __fastcall my_getFuncAddress(int *offset)
         + It uses a global variable in `.data` (0x14000B020)
         + It passes the PEB to the second function called.
 
-- As i'm  a bit lazy to fully understand all that pointer aritemtic shit, i will check the memory of the .data variable before i have to input my password. It should probably be initialized.
+- As i'm  a bit lazy to fully understand all that pointer arithmetic, I will check the memory of the .data variable before I have to input my password. It should probably be initialized.
 
 ```
 0:003> g
@@ -180,7 +181,7 @@ ntdll!DbgBreakPoint:
 - The next are function pointers. 
 - Great we know that it will store function pointers in this array.
 
-- Looking in the function that receive the PEB is also interisting : 
+- Looking in the function that receive the PEB is also interesting : 
 ```cpp
 _LIST_ENTRY *__fastcall my_GetDllBaseAddress(_PEB *PEB, wchar_t *hashValue)
 {
@@ -205,8 +206,8 @@ _LIST_ENTRY *__fastcall my_GetDllBaseAddress(_PEB *PEB, wchar_t *hashValue)
 ```
 
 - By setting the good type on the first argument we understand that it will enumerate loaded module by using `PEB->Ldr->InMemoryOrderModuleList`
-- I knew this technique as i implemented [Hell's Gate](https://github.com/vxunderground/VXUG-Papers/tree/main/Hells%20Gate) few days before
-- `if ( hashValue == (wchar_t *)(unsigned int)my_hash_maybe(v2) )` This if show us that it's compare something with an "==" operator. The function called is an hash function !
+- I knew this technique as I implemented [Hell's Gate](https://github.com/vxunderground/VXUG-Papers/tree/main/Hells%20Gate) few days before
+- `if ( hashValue == (wchar_t *)(unsigned int)my_hash_maybe(v2) )` : This condition shows us that it's compare something with an "==" operator. The function called is an hash function !
 ```cpp
 unsigned __int64 __fastcall my_hash_maybe(unsigned __int16 *a1)
 {
@@ -223,7 +224,7 @@ unsigned __int64 __fastcall my_hash_maybe(unsigned __int16 *a1)
 }
 ```
 
-- Same kind of compare is also in the first function called in `0x140002063`
+- Same kind of compare is also done in the first function called in `0x140002063`
 
 ```cpp
 __int64 __fastcall my_unknown1(__int64 a1, __int64 hashedString)
@@ -284,11 +285,9 @@ __int64 __fastcall sub_140002E3C(unsigned __int16 int777)
   else
     return 0i64;
 }
-
-lcoated 0x1400021D0
 ```
 
-- By breaking on the first dinamic call of this one we see that it's calling `FindResourceWStub` 
+- By breaking on the first dynamic call of this one we see that it's calling `FindResourceWStub` 
 - The PE is containing resources !
 ```
 0:000> g
@@ -389,7 +388,7 @@ file /tmp/999.rc_out
 
 ![](img/xrefsimport.png)
 
-- Something I can deduce it that the father will set the RIP of the child to some of theses addresse when it want it to call a function !
+- Something I can deduce it that the father will set the RIP of the child to some of theses address when it want it to call a function !
 
 ### Other interesting functions
 
@@ -530,13 +529,13 @@ __int64 __fastcall my_handleDebug(_QWORD *a1, __int64 a2)
 
 - I know that the father will retrieve and set the child RIP register by using `GetThreadContext`/`SetThreadContex`. 
 - I knew some offset in the child are used to call some functions 
-        - Example baseAddress+0x8170 correspondt to memcpy call by the child process.
+        - Example baseAddress+0x8170 correspond to `memcpy` call by the child process.
 ![](img/xrefsimport.png)
 
-- My goal is :
+- My goal is to :
         + Inject a dll into the parent process
         + The dll create hooks on `GetThreadContext`/`SetThreadContext`
-        + Analyze whenever i'm on an interesing offset (cf function call.)
+        + Analyze whenever i'm on an interesting offset (cf function call.)
 
 ### Preparing the Dll
 
@@ -554,7 +553,7 @@ __int64 __fastcall my_handleDebug(_QWORD *a1, __int64 a2)
 - it should have create a static library file in `\minhook\Release\minhook.x64.lib`
 - I copy it over inside the directory where my dll sources are.
 - I Copy also `.\minhook\include\MinHook.h`
-- Now i can use `minhook` in my dll
+- Now I can use `minhook` in my dll
 
 ### Dll injector :
 
@@ -564,7 +563,7 @@ __int64 __fastcall my_handleDebug(_QWORD *a1, __int64 a2)
 
 ### Dll code
 
-- I wil not give a full explanation on the code but here is the DllMain :
+- I will not give a full explanation on the code but here is the DllMain :
 
 ```cpp
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -643,7 +642,7 @@ BOOL WINAPI handler_getThreadContext(HANDLE hThread, const CONTEXT * lpContext)
 ```
 
 - The code is basically the same for `SetThreadContext` handler.
-- What i do here is that i check if child's `RIP - BaseAddress` == an offset used to call a function in the child process.
+- What I do here is that I check if child's `RIP - BaseAddress` equal an offset used to call a function in the child process.
         + Remember : 
         + ![](img/xrefsimport.png)
         + If `RIP - BaseAddress == 0x8170` the child will call `memcpy`.
