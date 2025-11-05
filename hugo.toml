@@ -2,7 +2,6 @@ baseURL = "https://t0muxx.github.io"
 title = "t0muxx's blog"
 theme = 'hugo-theme-nostyleplease'
 languageCode = "en-us"
-paginate = 10
 pluralizelisttitles = false 
 
 [params]
