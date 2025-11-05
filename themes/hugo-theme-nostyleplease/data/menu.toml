@@ -49,8 +49,8 @@ title = "another list"
     title = "example page"
     url = "about"
 
-//[[entries]]
-//title = "PRO TIP"
-//entries = [
-//   { title = "to edit this menu, edit data/menu.toml file" }
-// ]
+#[[entries]]
+#title = "PRO TIP"
+#entries = [
+#   { title = "to edit this menu, edit data/menu.toml file" }
+# ]
